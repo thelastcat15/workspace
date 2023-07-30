@@ -4166,6 +4166,7 @@ if game.PlaceId == 12986400307 then
 				end
 			end
 		end
+		return
 	end
 	
 	function Body_Noclip()
@@ -4205,13 +4206,20 @@ if game.PlaceId == 12986400307 then
 			task.wait()
 			print("loop")
 			local player_map = find_map()
-			if (not player_map) then continue end
+			if (not player_map) then
+				before_stage = nil
+				continue
+			end
+			LocalPlayer.Character.Humanoid.Jump = true
             now_stage = player_map.Name
             local NC
 			local HRP = LocalPlayer.Character.HumanoidRootPart
 			spawn(function()
                 if now_stage ~= before_stage then
                     before_stage = now_stage
+		    pcall(function()
+           		NC:Disconnect()
+      		    end)
                     Body_Noclip()
                     NC = noclip()
                     pcall(function()
