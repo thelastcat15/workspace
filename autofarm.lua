@@ -4204,6 +4204,7 @@ if game.PlaceId == 12986400307 then
     local main = Window:Taps("Main")
     local main1 = main:newpage()
 
+    local NC
     local now_stage
     local before_stage
 	main1:Toggle("Auto TP Kill", false, function(t)
@@ -4214,23 +4215,27 @@ if game.PlaceId == 12986400307 then
 			local player_map = find_map()
 			if (not player_map) then
 				before_stage = nil
+				if LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip") then
+         				LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip"):Destroy()
+				end
+				wait(.5)
+				pcall(function()
+           				NC:Disconnect()
+      		   		end)
+		   		pcall(function()
+                    		   _G.MON_ADD:Disconnect()
+                  		 end)
 				continue
 			end
 			LocalPlayer.Character.Humanoid.Jump = true
             now_stage = player_map.Name
-            local NC
 			local HRP = LocalPlayer.Character.HumanoidRootPart
 			spawn(function()
                 if now_stage ~= before_stage then
                     before_stage = now_stage
-		    pcall(function()
-           		NC:Disconnect()
-      		    end)
                     Body_Noclip()
                     NC = noclip()
-                    pcall(function()
-                        _G.MON_ADD:Disconnect()
-                    end)
+                    
                     _G.MON_ADD = player_map["Monster_"].ChildAdded:Connect(function(mon)
                         --spawn(function()
                         repeat task.wait() until not _G.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp") and mon:FindFirstChild("Hp").Value > 0)
