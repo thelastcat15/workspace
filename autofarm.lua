@@ -4315,7 +4315,7 @@ if game.PlaceId == 12986400307 then
 		["GSpeed"] = 0,
 		["GCriticalHit"] = 0
 	}
-	main2:Bind("Auto Reset Status", Enum.KeyCode.U, function()
+	function reset_stat()
 		DataChange_Points:FireServer("ResetPoints")
 		task.wait(.5)
 		local max
@@ -4345,7 +4345,10 @@ if game.PlaceId == 12986400307 then
 				}
 			)
 		end
-	end)
+	end
+
+	main2:Button("Auto Reset Status", reset_stat)
+	main2:Bind("Auto Reset Status", Enum.KeyCode.U, reset_stat)
 
 	for _,name in pairs(name_point) do
 		main2:Slider(name, false, false, 0, 500, G_Plasma.stat[name], 1, false, function(t)
