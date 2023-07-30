@@ -4141,8 +4141,10 @@ if game.PlaceId == 12986400307 then
 	local LocalPlayer = game.Players.LocalPlayer
 
 	local stage_data = {
-		["Normal"] = "Monster_",
-		["Infinite"] = "InfiniteMap"
+		["Normal"] = "Monster",
+		["Infinite"] = "InfiniteMap",
+		["Event"] = "SkibiMap",
+		["Dril"] = "DrilRaid"
 	}
 
 	function find_map()
@@ -4158,12 +4160,16 @@ if game.PlaceId == 12986400307 then
 					end
 				end
             end
-		elseif (G_Plasma.stage == "Infinite") then
+		elseif (G_Plasma.stage == "Infinite" or G_Plasma.stage == "Dril") then
             for _,v in pairs(ForScript[stage]:GetChildren()) do
 				task.wait()
 				if (v.Player:FindFirstChild(LocalPlayer.Name)) then
 					return v
 				end
+			end
+		else
+			if (ForScript[stage].Player:FindFirstChild(LocalPlayer.Name)) then
+					return ForScript[stage]​
 			end
 		end
 		return
@@ -4289,7 +4295,7 @@ if game.PlaceId == 12986400307 then
 	end)
 	
 	G_Plasma.stage = G_Plasma.stage or "Normal"
-	main1:Drop("Stage", "Normal", false, {"Normal","Infinite"},function(f)
+	main1:Drop("Stage", "Normal", false, {"Normal","Infinite","Event","Dril"},function(f)
 		G_Plasma.stage = f
 		save_local_config()
 	end)
