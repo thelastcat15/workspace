@@ -4169,7 +4169,7 @@ if game.PlaceId == 12986400307 then
 			end
 		else
 			if (ForScript[stage].Player:FindFirstChild(LocalPlayer.Name)) then
-					return ForScript[stage]​
+					return ForScript[stage]
 			end
 		end
 		return
