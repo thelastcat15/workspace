@@ -4280,7 +4280,7 @@ if game.PlaceId == 12986400307 then
         before_stage = nil
 	end)
 	
-	G_Plasma.stage = G_Plasma.stage or "Monster_"
+	G_Plasma.stage = G_Plasma.stage or "Normal"
 	main1:Drop("Stage", "Normal", false, {"Normal","Infinite"},function(f)
 		G_Plasma.stage = f
 		save_local_config()
