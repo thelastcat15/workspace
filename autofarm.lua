@@ -4210,7 +4210,7 @@ if game.PlaceId == 12986400307 then
 	main1:Toggle("Auto TP Kill", G_Plasma.ATF, function(t)
 		G_Plasma.ATF = t
 		save_local_config()
-		while (_G.ATF) do
+		while (G_Plasma.ATF.ATF) do
 			task.wait()
 			print("loop")
 			local player_map = find_map()
@@ -4228,7 +4228,7 @@ if game.PlaceId == 12986400307 then
                   		 end)
 				continue
 			end
-			LocalPlayer.Character.Humanoid.Jump = true
+			
             now_stage = player_map.Name
 			local HRP = LocalPlayer.Character.HumanoidRootPart
 			spawn(function()
@@ -4239,8 +4239,8 @@ if game.PlaceId == 12986400307 then
                     
                     _G.MON_ADD = player_map["Monster_"].ChildAdded:Connect(function(mon)
                         --spawn(function()
-                        repeat task.wait() until not _G.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp") and mon:FindFirstChild("Hp").Value > 0)
-                        if (_G.ATF) then
+                        repeat task.wait() until not G_Plasma.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp") and mon:FindFirstChild("Hp").Value > 0)
+                        if (G_Plasma.ATF) then
                             repeat task.wait()
                                 pcall(function()
                                     MonsterEvent:FireServer(
@@ -4251,13 +4251,13 @@ if game.PlaceId == 12986400307 then
                                         }
                                     )
                                 end)
-                            until not _G.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
+                            until not G_Plasma.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
                         end
                         --end)
                     end)
                     for _,mon in pairs(player_map["Monster_"]:GetChildren()) do
-                        repeat task.wait() until not _G.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp") and mon:FindFirstChild("Hp").Value > 0)
-                        if (_G.ATF) then
+                        repeat task.wait() until not G_Plasma.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp") and mon:FindFirstChild("Hp").Value > 0)
+                        if (G_Plasma.ATF) then
                             repeat task.wait()
                                 pcall(function()
                                     MonsterEvent:FireServer(
@@ -4268,7 +4268,7 @@ if game.PlaceId == 12986400307 then
                                         }
                                     )
                                 end)
-                            until not _G.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
+                            until not G_Plasma.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
                         end
                     end
                 end
@@ -4276,14 +4276,14 @@ if game.PlaceId == 12986400307 then
 
 			for i,mon in pairs(player_map["Monster_"]:GetChildren()) do
 				pcall(function()
-                    repeat task.wait() until not _G.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp"))
+                    repeat task.wait() until not G_Plasma.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp"))
                     repeat task.wait()
                         --pcall(function()
                         if player_map.Player:FindFirstChild(LocalPlayer.Name) then
                             HRP.CFrame = mon.HumanoidRootPart.CFrame + Vector3.new(0,0,-15)
                         end
                         --end)
-                    until not _G.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
+                    until not G_Plasma.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
 				end)
 			end
 		end
