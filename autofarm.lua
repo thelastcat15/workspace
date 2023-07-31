@@ -4199,6 +4199,38 @@ if game.PlaceId == 12986400307 then
 		return Noclipping
 	end
 
+	function reset_stat()
+		DataChange_Points:FireServer("ResetPoints")
+		task.wait(.5)
+		local max
+		for name, val in pairs(G_Plasma.stat) do
+			if val == 500 then
+				max = {name,val}
+				continue
+			elseif (val == 0) then
+				continue
+			end
+			DataChange_Points:FireServer(
+				"ClickPoints",
+				{
+					["Obj"] = name,
+					["Points"] = val
+				}
+			)
+			task.wait()
+		end
+		if max then
+			print(name,val)
+			DataChange_Points:FireServer(
+				"ClickPoints",
+				{
+					["Obj"] = max[1],
+					["Points"] = max[2]
+				}
+			)
+		end
+	end
+
 	--/////////////////  Window  /////////////////
     local Window = create:Win("Plasma",11390492777)
     local main = Window:Taps("Main")
@@ -4305,6 +4337,28 @@ if game.PlaceId == 12986400307 then
 		G_Plasma.stage = f
 		save_local_config()
 	end)
+
+	main1:Line()
+
+	main1:Toggle("Auto Restat", G_Plasma.ARS, function(t)
+		G_Plasma.ARS = t
+		save_local_config()
+
+		while (G_Plasma.ARS) do
+			task.wait()
+			pcall(function()
+				if (LocalPlayer.Character.Humanoid.Health <= G_Plasma.Health_Set) then
+					reset_stat()
+				end
+			end)
+		end
+	end)
+
+	main1:Slider("Set Health ( % )", false, false, 1, 100, G_Plasma.Health_Set, 1, false, function(t)
+		G_Plasma.Health_Set = tonumber(t)
+		save_local_config()
+	end)
+		
 	
 
     local main2 = main:newpage()
@@ -4316,37 +4370,6 @@ if game.PlaceId == 12986400307 then
 		["GSpeed"] = 0,
 		["GCriticalHit"] = 0
 	}
-	function reset_stat()
-		DataChange_Points:FireServer("ResetPoints")
-		task.wait(.5)
-		local max
-		for name, val in pairs(G_Plasma.stat) do
-			if val == 500 then
-				max = {name,val}
-				continue
-			elseif (val == 0) then
-				continue
-			end
-			DataChange_Points:FireServer(
-				"ClickPoints",
-				{
-					["Obj"] = name,
-					["Points"] = val
-				}
-			)
-			task.wait()
-		end
-		if max then
-			print(name,val)
-			DataChange_Points:FireServer(
-				"ClickPoints",
-				{
-					["Obj"] = max[1],
-					["Points"] = max[2]
-				}
-			)
-		end
-	end
 
 	main2:Button("Auto Reset Status", reset_stat)
 	main2:Bind("Auto Reset Status", Enum.KeyCode.U, reset_stat)
