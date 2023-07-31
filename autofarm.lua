@@ -4347,7 +4347,8 @@ if game.PlaceId == 12986400307 then
 		while (G_Plasma.ARS) do
 			task.wait()
 			pcall(function()
-				if (LocalPlayer.Character.Humanoid.Health <= G_Plasma.Health_Set) then
+				local h = LocalPlayer.Character.Humanoid
+				if ((h.Health * 100) / h.MaxHealth <= G_Plasma.Health_Set) then
 					reset_stat()
 				end
 			end)
