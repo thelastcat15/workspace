@@ -4242,7 +4242,7 @@ if game.PlaceId == 12986400307 then
 	main1:Toggle("Auto TP Kill", G_Plasma.ATF, function(t)
 		G_Plasma.ATF = t
 		save_local_config()
-		while (G_Plasma.ATF.ATF) do
+		while (G_Plasma.ATF) do
 			task.wait()
 			print("loop")
 			local player_map = find_map()
