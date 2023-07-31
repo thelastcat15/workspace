@@ -4207,8 +4207,9 @@ if game.PlaceId == 12986400307 then
     local NC
     local now_stage
     local before_stage
-	main1:Toggle("Auto TP Kill", false, function(t)
-		_G.ATF = t
+	main1:Toggle("Auto TP Kill", G_Plasma.ATF, function(t)
+		G_Plasma.ATF = t
+		save_local_config()
 		while (_G.ATF) do
 			task.wait()
 			print("loop")
