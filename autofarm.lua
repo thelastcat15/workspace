@@ -4199,6 +4199,32 @@ if game.PlaceId == 12986400307 then
 		return Noclipping
 	end
 
+	function get_mon()
+		spawn(function()
+			while G_Plasma.ATF do
+				if not _G.MonCheck then continue end
+				pcall(function()
+					local max_z = -math.huge
+					local focus
+					for i,mon in pairs(_G.map["Monster_"]:GetChildren()) do
+						task.wait()
+						pcall(function()
+							if mon.Hp.Value > 0 then
+								local temp_z = mon.HumanoidRootPart.Position.Z
+								if temp_z > max_z then
+									max_z = temp_z
+									focus = mon
+								end
+							end
+						end)
+					end
+					_G.mon_target = focus
+				end)
+			end
+		end)
+	end
+			
+
 	function reset_stat()
 		DataChange_Points:FireServer("ResetPoints")
 		task.wait(.5)
@@ -4246,8 +4272,10 @@ if game.PlaceId == 12986400307 then
 			task.wait()
 			print("loop")
 			local player_map = find_map()
+			_G.map = player_map
 			if (not player_map) then
 				before_stage = nil
+				_G.MonCheck = false
 				if LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip") then
          				LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip"):Destroy()
 				end
@@ -4268,6 +4296,8 @@ if game.PlaceId == 12986400307 then
                     before_stage = now_stage
                     Body_Noclip()
                     NC = noclip()
+			_G.MonCheck = true
+			
                     
                     _G.MON_ADD = player_map["Monster_"].ChildAdded:Connect(function(mon)
                         --spawn(function()
@@ -4306,18 +4336,12 @@ if game.PlaceId == 12986400307 then
                 end
             end)
 
-			for i,mon in pairs(player_map["Monster_"]:GetChildren()) do
-				pcall(function()
-                    repeat task.wait() until not G_Plasma.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp"))
-                    repeat task.wait()
-                        --pcall(function()
+		   pcall(function()
                         if player_map.Player:FindFirstChild(LocalPlayer.Name) then
-                            HRP.CFrame = mon.HumanoidRootPart.CFrame + Vector3.new(0,0,-15)
+                            HRP.CFrame = _G.mon_target.HumanoidRootPart.CFrame + Vector3.new(0,0,-15)
                         end
-                        --end)
-                    until not G_Plasma.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
-				end)
-			end
+		   end)
+                        
 		end
         pcall(function()
             _G.MON_ADD:Disconnect()
@@ -4384,4 +4408,6 @@ if game.PlaceId == 12986400307 then
 	end
 
     getgenv().Loaded = true
+
+    get_mon()
 end
