@@ -4373,11 +4373,10 @@ if game.PlaceId == 12986400307 then
 		while (G_Plasma.ARS) do
 			task.wait()
 			-- pcall(function()
-				local Health = LocalPlayer.Character.Hp.Value
-				local max_h = MainGui.UpgradeFrame.main.GHealth.pluspoint.Text
-				local MaxHealth = loadstring('return ' .. max_h:gsub("K", "000"))()
-				print((Health * 100) / MaxHealth .. " / 100")
-				if ((Health * 100) / MaxHealth <= G_Plasma.Health_Set) then
+				local Health = MainGui.MainFrame.PlayerMain.HP.TextLabel.Text
+				local txt = Health:gsub("K", "000"):split(' ')
+				local result = tonumber(txt[3]) / tonumber(txt[1])
+				if result*100 <= G_Plasma.Health_Set) then
 					reset_stat()
 				end
 			-- end)
