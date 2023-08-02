@@ -143,7 +143,7 @@ if game.PlaceId == 12986400307 then
         Ui_mobile = Instance.new("Frame")
         Ui_mobile.Name = "Ui_mobile"
         Ui_mobile.Size = UDim2.new(0, 50, 0, 50)
-        Ui_mobile.AnchorPoint = Vector2.new(0, 0)
+        Ui_mobile.AnchorPoint = Vector2.new(0.5, 0.5)
         Ui_mobile.Position = UDim2.new(0, 0, 0, 0)
         Ui_mobile.BackgroundTransparency = 1.000
         Ui_mobile.Parent = Plasma_mobile
@@ -4417,13 +4417,13 @@ if game.PlaceId == 12986400307 then
     setting1:Drop("Stage", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"},function(f)
 	G_Plasma.pos_ui = f
 	if f == "top-left" then
-		Ui_mobile.Position = UDim2.new(0, 0, 0, 0)
+		Ui_mobile.Position = UDim2.new(0, 50, 0, 50)
 	elseif f == "top-right" then
-		Ui_mobile.Position = UDim2.new(1, 0, 0, 0)
+		Ui_mobile.Position = UDim2.new(1, -50, 0, 50)
 	elseif f == "bottom-left" then
-		Ui_mobile.Position = UDim2.new(0, 0, 1, 0)
+		Ui_mobile.Position = UDim2.new(0, 50, 1, -50)
 	else
-		Ui_mobile.Position = UDim2.new(1, 0, 1, 0)
+		Ui_mobile.Position = UDim2.new(1, -50, 1, -50)
 	end
     end)
 
