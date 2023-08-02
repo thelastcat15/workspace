@@ -144,7 +144,7 @@ if game.PlaceId == 12986400307 then
         Ui_mobile.Name = "Ui_mobile"
         Ui_mobile.Size = UDim2.new(0, 50, 0, 50)
         Ui_mobile.AnchorPoint = Vector2.new(0.5, 0.5)
-        Ui_mobile.Position = UDim2.new(0, 0, 0, 0)
+        Ui_mobile.Position = UDim2.new(0, 50, 0, 50)
         Ui_mobile.BackgroundTransparency = 1.000
         Ui_mobile.Parent = Plasma_mobile
         
@@ -4413,8 +4413,7 @@ if game.PlaceId == 12986400307 then
     local setting = Window:Taps("Setting")
     local setting1 = setting:newpage()
 
-    _G.ui = Ui_mobile
-    setting1:Drop("Stage", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"},function(f)
+    function set_ui(f)
 	G_Plasma.pos_ui = f
 	if f == "top-left" then
 		Ui_mobile.Position = UDim2.new(0, 25, 0, 25)
@@ -4426,6 +4425,9 @@ if game.PlaceId == 12986400307 then
 		Ui_mobile.Position = UDim2.new(1, -25, 1, -25)
 	end
     end)
+    setting1:Drop("Stage", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"}, set_ui)
+
+    set_ui(G_Plasma.pos_ui)
 
     getgenv().Loaded = true
 
