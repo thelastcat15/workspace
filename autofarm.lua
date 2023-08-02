@@ -4397,7 +4397,7 @@ if game.PlaceId == 12986400307 then
 		["GCriticalHit"] = 0
 	}
 
-	main2:Button("Auto Reset Status", reset_stat)
+	main2:Button("Reset Status", reset_stat)
 	main2:Bind("Auto Reset Status", Enum.KeyCode.U, reset_stat)
 
 	for _,name in pairs(name_point) do
