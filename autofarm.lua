@@ -4204,6 +4204,7 @@ if game.PlaceId == 12986400307 then
 	function get_mon()
 		spawn(function()
 			while G_Plasma.ATF do
+				task.wait()
 				if not _G.MonCheck then continue end
 				-- pcall(function()
 					local max_z = -math.huge
