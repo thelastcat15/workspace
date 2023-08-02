@@ -4424,7 +4424,7 @@ if game.PlaceId == 12986400307 then
 	else
 		Ui_mobile.Position = UDim2.new(1, -25, 1, -25)
 	end
-    end)
+    end
     setting1:Drop("Stage", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"}, set_ui)
 
     set_ui(G_Plasma.pos_ui)
