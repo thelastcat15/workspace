@@ -121,6 +121,7 @@ if game.PlaceId == 12986400307 then
     local PlasmaNotify = Instance.new("ScreenGui")
     local PlasmaHubRightFrame = Instance.new("ScreenGui")
     local Plasma_mobile
+    local Ui_mobile
     if not getgenv().PC then
         Plasma_mobile = Instance.new("ScreenGui")
     end
@@ -139,7 +140,7 @@ if game.PlaceId == 12986400307 then
         Plasma_mobile.Name = "PlasmaHub_mobile"
         Plasma_mobile.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-        local Ui_mobile = Instance.new("Frame")
+        Ui_mobile = Instance.new("Frame")
         Ui_mobile.Name = "Ui_mobile"
         Ui_mobile.Size = UDim2.new(0, 50, 0, 50)
         Ui_mobile.AnchorPoint = Vector2.new(0, 0)
