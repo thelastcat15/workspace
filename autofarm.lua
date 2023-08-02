@@ -4414,6 +4414,7 @@ if game.PlaceId == 12986400307 then
     local setting = Window:Taps("Setting")
     local setting1 = setting:newpage()
 
+    _G.ui = Ui_mobile
     setting1:Drop("Stage", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"},function(f)
 	G_Plasma.pos_ui = f
 	if f == "top-left" then
