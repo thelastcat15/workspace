@@ -4357,7 +4357,7 @@ if game.PlaceId == 12986400307 then
 	end)
 	
 	G_Plasma.stage = G_Plasma.stage or "Normal"
-	main1:Drop("Stage", "Normal", false, {"Normal","Infinite","Event","Dril"},function(f)
+	main1:Drop("Stage",  G_Plasma.stage, false, {"Normal","Infinite","Event","Dril"},function(f)
 		G_Plasma.stage = f
 		save_local_config()
 	end)
@@ -4406,6 +4406,22 @@ if game.PlaceId == 12986400307 then
 			save_local_config()
 		end)
 	end
+
+    local setting = Window:Taps("Setting")
+    local setting1 = setting:newpage()
+
+    setting1:Drop("Stage", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"},function(f)
+	G_Plasma.pos_ui = f
+	if f == "top-left" then
+		Ui_mobile.Position = UDim2.new(0, 0, 0, 0)
+	elseif f == "top-right" then
+		Ui_mobile.Position = UDim2.new(1, 0, 0, 0)
+	elseif f == "bottom-left" then
+		Ui_mobile.Position = UDim2.new(0, 0, 1, 0)
+	else
+		Ui_mobile.Position = UDim2.new(1, 0, 1, 0)
+	end
+    end)
 
     getgenv().Loaded = true
 
