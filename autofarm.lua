@@ -4200,32 +4200,6 @@ if game.PlaceId == 12986400307 then
 		end)
 		return Noclipping
 	end
-
-	function get_mon()
-		spawn(function()
-			while G_Plasma.ATF do
-				task.wait()
-				if not _G.MonCheck then continue end
-				-- pcall(function()
-					local max_z = -math.huge
-					local focus
-					for i,mon in pairs(_G.map["Monster_"]:GetChildren()) do
-						task.wait()
-						pcall(function()
-							if mon.Hp.Value > 0 then
-								local temp_z = mon.HumanoidRootPart.Position.Z
-								if temp_z > max_z then
-									max_z = temp_z
-									focus = mon
-								end
-							end
-						end)
-					end
-					_G.mon_target = focus
-				-- end)
-			end
-		end)
-	end
 			
 
 	function reset_stat()
@@ -4280,15 +4254,15 @@ if game.PlaceId == 12986400307 then
 				before_stage = nil
 				_G.MonCheck = false
 				if LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip") then
-         				LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip"):Destroy()
+         			LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip"):Destroy()
 				end
 				wait(.5)
 				pcall(function()
-           				NC:Disconnect()
-      		   		end)
+                    NC:Disconnect()
+                end)
 		   		pcall(function()
-                    		   _G.MON_ADD:Disconnect()
-                  		 end)
+                    _G.MON_ADD:Disconnect()
+                end)
 				continue
 			end
 			
@@ -4299,7 +4273,7 @@ if game.PlaceId == 12986400307 then
                     before_stage = now_stage
                     Body_Noclip()
                     NC = noclip()
-			_G.MonCheck = true
+			        _G.MonCheck = true
 			
                     
                     _G.MON_ADD = player_map["Monster_"].ChildAdded:Connect(function(mon)
@@ -4375,8 +4349,10 @@ if game.PlaceId == 12986400307 then
 			task.wait()
 			-- pcall(function()
 				local Health = MainGui.MainFrame.PlayerMain.HP.TextLabel.Text
-				local txt = Health:gsub("K", "000"):split(' ')
-				local result = tonumber(txt[3]) / tonumber(txt[1])
+				local num1, num2 = Health:match("(%d+%.?%d*)K%s-/%s-(%d+%.?%d*)K")
+                local result = tonumber(num1) / tonumber(num2)
+
+                print(result * 100,"%")
 				if (result * 100 <= G_Plasma.Health_Set) then
 					reset_stat()
 				end
@@ -4415,16 +4391,16 @@ if game.PlaceId == 12986400307 then
     local setting1 = setting:newpage()
 
     function set_ui(f)
-	G_Plasma.pos_ui = f
-	if f == "top-left" then
-		Ui_mobile.Position = UDim2.new(0, 25, 0, 25)
-	elseif f == "top-right" then
-		Ui_mobile.Position = UDim2.new(1, -25, 0, 25)
-	elseif f == "bottom-left" then
-		Ui_mobile.Position = UDim2.new(0, 25, 1, -25)
-	else
-		Ui_mobile.Position = UDim2.new(1, -25, 1, -25)
-	end
+        G_Plasma.pos_ui = f
+        if f == "top-left" then
+            Ui_mobile.Position = UDim2.new(0, 25, 0, 25)
+        elseif f == "top-right" then
+            Ui_mobile.Position = UDim2.new(1, -25, 0, 25)
+        elseif f == "bottom-left" then
+            Ui_mobile.Position = UDim2.new(0, 25, 1, -25)
+        elseif f == "bottom-right" then
+            Ui_mobile.Position = UDim2.new(1, -25, 1, -25)
+        end
     end
     setting1:Drop("Stage", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"}, set_ui)
 
@@ -4432,5 +4408,27 @@ if game.PlaceId == 12986400307 then
 
     getgenv().Loaded = true
 
-    get_mon()
+    spawn(function()
+        while true do
+            task.wait()
+            if not G_Plasma.ATF or not _G.MonCheck then continue end
+            -- pcall(function()
+                local max_z = -math.huge
+                local focus
+                for i,mon in pairs(_G.map["Monster_"]:GetChildren()) do
+                    task.wait()
+                    pcall(function()
+                        if mon.Hp.Value > 0 then
+                            local temp_z = mon.HumanoidRootPart.Position.Z
+                            if temp_z > max_z then
+                                max_z = temp_z
+                                focus = mon
+                            end
+                        end
+                    end)
+                end
+                _G.mon_target = focus
+            -- end)
+        end
+    end)
 end
