@@ -4205,7 +4205,7 @@ if game.PlaceId == 12986400307 then
 		spawn(function()
 			while G_Plasma.ATF do
 				if not _G.MonCheck then continue end
-				pcall(function()
+				-- pcall(function()
 					local max_z = -math.huge
 					local focus
 					for i,mon in pairs(_G.map["Monster_"]:GetChildren()) do
@@ -4221,7 +4221,7 @@ if game.PlaceId == 12986400307 then
 						end)
 					end
 					_G.mon_target = focus
-				end)
+				-- end)
 			end
 		end)
 	end
