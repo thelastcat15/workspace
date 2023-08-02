@@ -4137,6 +4137,7 @@ if game.PlaceId == 12986400307 then
 	local DataChange_Mission = CurRemotes:WaitForChild("DataChange_Mission")
 	local RangeEvent = game:GetService("ReplicatedStorage"):WaitForChild("CurrentModule"):WaitForChild("RangeCheck"):WaitForChild("RangeEvent")
 	local ForScript = workspace:WaitForChild("ForScript")
+	local MainGui = LocalPlayer.PlayerGui.MainGui
 	--RangeEvent:FireServer("dayreward")
 
 	local LocalPlayer = game.Players.LocalPlayer
@@ -4372,9 +4373,11 @@ if game.PlaceId == 12986400307 then
 		while (G_Plasma.ARS) do
 			task.wait()
 			pcall(function()
-				local h = LocalPlayer.Character.Humanoid
-				print((h.Health * 100) / h.MaxHealth .. " / 100")
-				if ((h.Health * 100) / h.MaxHealth <= G_Plasma.Health_Set) then
+				local Health = LocalPlayer.Character.Hp.Value
+				local max_h = MainGui.UpgradeFrame.main.GHealth.pluspoint.Text
+				local MaxHealth = loadstring('return ' .. max_h:gsub("K", "000"))()
+				print((Health * 100) / MaxHealth .. " / 100")
+				if ((Health * 100) / MaxHealth <= G_Plasma.Health_Set) then
 					reset_stat()
 				end
 			end)
