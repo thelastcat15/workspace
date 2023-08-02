@@ -4376,7 +4376,7 @@ if game.PlaceId == 12986400307 then
 				local Health = MainGui.MainFrame.PlayerMain.HP.TextLabel.Text
 				local txt = Health:gsub("K", "000"):split(' ')
 				local result = tonumber(txt[3]) / tonumber(txt[1])
-				if result * 100 <= G_Plasma.Health_Set) then
+				if (result * 100 <= G_Plasma.Health_Set) then
 					reset_stat()
 				end
 			-- end)
