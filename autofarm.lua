@@ -122,7 +122,7 @@ if game.PlaceId == 12986400307 then
     local PlasmaHubRightFrame = Instance.new("ScreenGui")
     local Plasma_mobile
     local Ui_mobile
-    if not getgenv().PC then
+    if true or not getgenv().PC then
         Plasma_mobile = Instance.new("ScreenGui")
     end
 
@@ -130,12 +130,12 @@ if game.PlaceId == 12986400307 then
         syn.protect_gui(PlasmaCourseScreen)
         syn.protect_gui(PlasmaNotify)
         syn.protect_gui(PlasmaHubRightFrame)
-        if not getgenv().PC then
+        if true or not getgenv().PC then
             syn.protect_gui(Plasma_mobile)
         end
     end
 
-    if not getgenv().PC then
+    if true or not getgenv().PC then
         Plasma_mobile.Parent = game:GetService("CoreGui")
         Plasma_mobile.Name = "PlasmaHub_mobile"
         Plasma_mobile.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -4133,14 +4133,17 @@ if game.PlaceId == 12986400307 then
 
 	local CurRemotes = game:GetService("ReplicatedStorage"):WaitForChild("CurRemotes")
 	local MonsterEvent = CurRemotes:WaitForChild("MonsterEvent")
+	local DataChange_Item = CurRemotes:WaitForChild("DataChange_Item")
 	local DataChange_Points = CurRemotes:WaitForChild("DataChange_Points")
 	local DataChange_Mission = CurRemotes:WaitForChild("DataChange_Mission")
 	local RangeEvent = game:GetService("ReplicatedStorage"):WaitForChild("CurrentModule"):WaitForChild("RangeCheck"):WaitForChild("RangeEvent")
 	local ForScript = workspace:WaitForChild("ForScript")
 	local MainGui = LocalPlayer.PlayerGui.MainGui
-	--RangeEvent:FireServer("dayreward")
 
 	local LocalPlayer = game.Players.LocalPlayer
+	local Mon_List = {}
+    local Running_ATK = 0
+    local Limit_ATK = 10
 
 	local stage_data = {
 		["Normal"] = "Monster",
@@ -4171,7 +4174,7 @@ if game.PlaceId == 12986400307 then
 			end
 		else
 			if (ForScript[stage].Player:FindFirstChild(LocalPlayer.Name)) then
-					return ForScript[stage]
+				return ForScript[stage]
 			end
 		end
 		return
@@ -4223,7 +4226,6 @@ if game.PlaceId == 12986400307 then
 			task.wait()
 		end
 		if max then
-			print(name,val)
 			DataChange_Points:FireServer(
 				"ClickPoints",
 				{
@@ -4233,109 +4235,128 @@ if game.PlaceId == 12986400307 then
 			)
 		end
 	end
-
+	
 	--/////////////////  Window  /////////////////
     local Window = create:Win("Plasma",11390492777)
     local main = Window:Taps("Main")
     local main1 = main:newpage()
 
     local NC
-    local now_stage
-    local before_stage
-	main1:Toggle("Auto TP Kill", G_Plasma.ATF, function(t)
-		G_Plasma.ATF = t
+	main1:Toggle("Auto Kill", G_Plasma.AK_NEW, function(t)
+		G_Plasma.AK_NEW = t
 		save_local_config()
-		while (G_Plasma.ATF) do
+		while (G_Plasma.AK_NEW) do
 			task.wait()
-			print("loop")
-			local player_map = find_map()
-			_G.map = player_map
-			if (not player_map) then
-				before_stage = nil
-				_G.MonCheck = false
+			
+			local HRP = LocalPlayer.Character.HumanoidRootPart
+            if _G.map_new then
+                for _,mon in pairs(_G.map_new["Monster_"]:GetChildren()) do
+                    task.wait()
+                    if not mon:FindFirstChild("Tag_First") then
+                        local obj = Instance.new("BoolValue")
+                        obj.Name = "Tag_First"
+                        obj.Parent = mon
+                        spawn(function()
+                            pcall(function()
+                                repeat task.wait(.2) until not G_Plasma.AK_NEW or not mon or mon.Parent == nil or mon:FindFirstChild("Hp")
+                                if G_Plasma.AK_NEW and mon and mon.Parent and mon:FindFirstChild("Hp") then
+                                    table.insert(Mon_List, mon)
+                                end
+                            end)
+                        end)
+                    end
+                end
+            end                     
+		end
+	end)
+
+    main1:Toggle("Auto TP", G_Plasma.AT, function(t)
+        G_Plasma.AT = t
+		save_local_config()
+        local NC
+        local player_map
+		while (G_Plasma.AT) do
+            task.wait()
+
+            if (not _G.map_new) then
 				if LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip") then
          			LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip"):Destroy()
 				end
-				wait(.5)
-				pcall(function()
+				wait(.2)
+				if NC then
                     NC:Disconnect()
-                end)
-		   		pcall(function()
-                    _G.MON_ADD:Disconnect()
-                end)
+                    NC = nil
+                end
 				continue
 			end
-			
-            now_stage = player_map.Name
-			local HRP = LocalPlayer.Character.HumanoidRootPart
-			spawn(function()
-                if now_stage ~= before_stage then
-                    before_stage = now_stage
-                    Body_Noclip()
-                    NC = noclip()
-			        _G.MonCheck = true
-			
-                    
-                    _G.MON_ADD = player_map["Monster_"].ChildAdded:Connect(function(mon)
-                        --spawn(function()
-                        repeat task.wait() until not G_Plasma.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp") and mon:FindFirstChild("Hp").Value > 0)
-                        if (G_Plasma.ATF) then
-                            repeat task.wait()
-                                pcall(function()
-                                    MonsterEvent:FireServer(
-                                        "DamToMonster",
-                                        mon,
-                                        {
-                                            ["damtype"] = "normal"
-                                        }
-                                    )
-                                end)
-                            until not G_Plasma.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
-                        end
-                        --end)
-                    end)
-                    for _,mon in pairs(player_map["Monster_"]:GetChildren()) do
-                        repeat task.wait() until not G_Plasma.ATF or not mon.Parent or (mon:FindFirstChild("HumanoidRootPart") and mon:FindFirstChild("Hp") and mon:FindFirstChild("Hp").Value > 0)
-                        if (G_Plasma.ATF) then
-                            repeat task.wait()
-                                pcall(function()
-                                    MonsterEvent:FireServer(
-                                        "DamToMonster",
-                                        mon,
-                                        {
-                                            ["damtype"] = "normal"
-                                        }
-                                    )
-                                end)
-                            until not G_Plasma.ATF or not mon.Parent or not mon:FindFirstChild("Hp") or mon:FindFirstChild("Hp").Value <= 0 
-                        end
-                    end
-                end
-            end)
 
-		   pcall(function()
-                        if player_map.Player:FindFirstChild(LocalPlayer.Name) then
-                            HRP.CFrame = _G.mon_target.HumanoidRootPart.CFrame + Vector3.new(0,0,-15)
-                        end
-		   end)
-                        
-		end
-        pcall(function()
-            _G.MON_ADD:Disconnect()
-        end)
-        pcall(function()
+            if player_map ~= _G.map_new then
+                player_map = _G.map_new
+                
+			    pcall(function()
+                    local m_c = player_map["Monster_"]:GetChildren()
+                    Body_Noclip()
+                    if NC then
+                        NC:Disconnect()
+                        NC = nil
+                    end
+                    NC = noclip()
+                end)
+            end
+			local HRP = LocalPlayer.Character.HumanoidRootPart
+            if _G.map_new and player_map.Player:FindFirstChild(LocalPlayer.Name) then
+                pcall(function()
+                    if G_Plasma.stage == "Normal" then
+                        HRP.CFrame = _G.mon_target_new.HumanoidRootPart.CFrame + Vector3.new(0,0, 0-G_Plasma.TP_D)
+                    else
+                        HRP.CFrame = _G.mon_target_new.HumanoidRootPart.CFrame + Vector3.new(0,0, G_Plasma.TP_D)
+                    end
+                end)
+            end
+        end
+        if NC then
             NC:Disconnect()
-        end)
-        wait(.3)
+            NC = nil
+        end
+        wait(.5)
         if LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip") then
             LocalPlayer.Character.HumanoidRootPart:FindFirstChild("Body Noclip"):Destroy()
         end
-        before_stage = nil
-	end)
+    end)
+
+    main1:Toggle("Create Floor", G_Plasma.CF, function(t)
+        G_Plasma.CF = t
+		save_local_config()
+
+        if G_Plasma.CF then
+            local NC
+            local HRP = LocalPlayer.Character.HumanoidRootPart
+            local mark_y = HRP.Position.Y - (HRP.Size.Y / 2) - 1
+
+            local P = Instance.new("Part")
+            P.Size = Vector3.new(20,0.2,20)
+            P.Transparency = 0.95
+            P.Anchored = true
+            P.Parent = game.workspace
+            NC = noclip()
+            while G_Plasma.CF do
+                task.wait()
+                P.Position = Vector3.new(HRP.Position.X, mark_y, HRP.Position.Z)
+            end
+            NC:Disconnect()
+            P:Destroy()
+        end
+    end)
 	
 	G_Plasma.stage = G_Plasma.stage or "Normal"
 	main1:Drop("Stage",  G_Plasma.stage, false, {"Normal","Infinite","Event","Dril"},function(f)
 		G_Plasma.stage = f
+		save_local_config()
+	end)
+
+	G_Plasma.type_ATK = G_Plasma.type_ATK or "All"
+    main1:Drop("Type ATK",  G_Plasma.type_ATK, false, {"All","Single"},function(f)
+		G_Plasma.type_ATK = f
 		save_local_config()
 	end)
 
@@ -4347,16 +4368,18 @@ if game.PlaceId == 12986400307 then
 
 		while (G_Plasma.ARS) do
 			task.wait()
-			-- pcall(function()
+			pcall(function()
 				local Health = MainGui.MainFrame.PlayerMain.HP.TextLabel.Text
-				local num1, num2 = Health:match("(%d+%.?%d*)K%s-/%s-(%d+%.?%d*)K")
-                local result = tonumber(num1) / tonumber(num2)
+                if Health then
+                    Health = "(" .. Health .. ")"
+                    local converted = Health:gsub("K", " * 1000"):gsub("M", " * 1000000"):gsub(" / ", ") / (")
+                    result = loadstring("return " .. converted)()
 
-                print(result * 100,"%")
-				if (result * 100 <= G_Plasma.Health_Set) then
-					reset_stat()
-				end
-			-- end)
+                    if (result * 100 <= G_Plasma.Health_Set) then
+                        reset_stat()
+                    end
+                end
+			end)
 		end
 	end)
 
@@ -4365,7 +4388,15 @@ if game.PlaceId == 12986400307 then
 		save_local_config()
 	end)
 		
+	main1:Bind("Tp Forward", Enum.KeyCode.Y, function()
+		local G = LocalPlayer.Character.HumanoidRootPart
+		G.CFrame = G.CFrame * CFrame.new(0,0,-500)
+	end)
 	
+	main1:Bind("Tp Backward", Enum.KeyCode.H, function()
+		local G = LocalPlayer.Character.HumanoidRootPart
+		G.CFrame = G.CFrame * CFrame.new(0,0,500)
+	end)
 
     local main2 = main:newpage()
 
@@ -4387,8 +4418,48 @@ if game.PlaceId == 12986400307 then
 		end)
 	end
 
+    local item = Window:Taps("Item")
+    local item1 = item:newpage()
+
+    item1:Toggle("Auto Craft All", G_Plasma.Auto_Craft, function(t)
+        G_Plasma.Auto_Craft = t
+        save_local_config()
+
+        while G_Plasma.Auto_Craft do
+            wait(1)
+            DataChange_Item:FireServer("craftAll")
+        end
+    end)
+
+    
+    local item2 = item:newpage()
+
+    item2:Label("Daily Reward")
+
+    item2:Button("Normal Chest", function()
+        RangeEvent:FireServer("dayreward")
+    end)
+
+    item2:Button("Group Chest", function()
+        RangeEvent:FireServer("likegroup")
+    end)
+
     local setting = Window:Taps("Setting")
     local setting1 = setting:newpage()
+
+    G_Plasma.TP_D = G_Plasma.TP_D or 15
+    setting1:Slider("Distance Auto TP", false, false, 0, 100, G_Plasma.TP_D, 1, false, function(t)
+        G_Plasma.TP_D = tonumber(t)
+        save_local_config()
+    end)
+
+    G_Plasma.TP_L = G_Plasma.TP_L or 100
+    setting1:Slider("Delay ATK (milisec)", false, false, 1, 2000, G_Plasma.TP_L, 100, false, function(t)
+        G_Plasma.TP_L = tonumber(t)
+        save_local_config()
+    end)
+
+    local setting2 = setting:newpage()
 
     function set_ui(f)
         G_Plasma.pos_ui = f
@@ -4402,33 +4473,132 @@ if game.PlaceId == 12986400307 then
             Ui_mobile.Position = UDim2.new(1, -25, 1, -25)
         end
     end
-    setting1:Drop("Stage", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"}, set_ui)
+
+    setting2:Label("UI Setting")
+    setting2:Drop("Position", G_Plasma.pos_ui or "top-left", false, {"top-left", "top-right", "bottom-left", "bottom-right"}, set_ui)
 
     set_ui(G_Plasma.pos_ui)
 
     getgenv().Loaded = true
 
     spawn(function()
-        while true do
-            task.wait()
-            if not G_Plasma.ATF or not _G.MonCheck then continue end
-            -- pcall(function()
-                local max_z = -math.huge
+        while task.wait() do
+            if (not _G.map_new or not (G_Plasma.AK_NEW or G_Plasma.AT)) then continue end
+            pcall(function()
+                local max_z
+                if G_Plasma.stage == "Infinite" then
+                    max_z = -math.huge
+                else
+                    max_z = math.huge
+                end
+
                 local focus
-                for i,mon in pairs(_G.map["Monster_"]:GetChildren()) do
+                for _,mon in pairs(_G.map_new["Monster_"]:GetChildren()) do
                     task.wait()
-                    pcall(function()
+                    local _, res = pcall(function()
                         if mon.Hp.Value > 0 then
-                            local temp_z = mon.HumanoidRootPart.Position.Z
-                            if temp_z > max_z then
-                                max_z = temp_z
+                            if mon.WalkSpeed.Value == 0 then
                                 focus = mon
+                                return "heal"
+                            else
+                                local temp_z = mon.HumanoidRootPart.Position.Z
+                                if G_Plasma.stage == "Infinite" then
+                                    if temp_z > max_z then
+                                        max_z = temp_z
+                                        focus = mon
+                                    end
+                                else
+                                    if temp_z < max_z then
+                                        max_z = temp_z
+                                        focus = mon
+                                    end
+                                end
                             end
                         end
                     end)
+                    if res == "heal" then
+                        break
+                    end
                 end
-                _G.mon_target = focus
-            -- end)
+                _G.mon_target_new = focus
+            end)
+        end
+    end)
+
+    spawn(function()
+        while task.wait() do
+            _G.map_new = find_map()
+        end
+    end)
+    
+    function Attack_Mon(mon)
+        local mon_hp = mon:FindFirstChild("Hp")
+        if mon_hp then
+            pcall(function()
+                while G_Plasma.AK_NEW and mon and mon.Parent and mon_hp.Value > 0 do
+                    task.wait(G_Plasma.TP_L / 1000)
+                    MonsterEvent:FireServer(
+                        "DamToMonster",
+                        mon,
+                        {
+                            ["damtype"] = "normal"
+                        }
+                    )
+                end
+            end)
+        end
+        Running_ATK = Running_ATK - 1
+    end
+    
+    spawn(function()
+        while task.wait() do
+            while (#Mon_List == 0 or not G_Plasma.AK_NEW) do
+                wait()
+            end
+
+			pcall(function()
+                if Running_ATK < Limit_ATK then
+                    local mon = Mon_List[1]
+                    if mon then
+                        local mon_hp = mon:FindFirstChild("Hp")
+                        if mon_hp and mon.Parent then
+                            if mon_hp.Value > 0 then
+                                Running_ATK = Running_ATK + 1
+                                table.remove(Mon_List,1)
+                                coroutine.wrap(Attack_Mon)(mon)
+                            else
+                                table.remove(Mon_List,1)
+                            end
+                        elseif not mon.Parent then
+                            table.remove(Mon_List,1)
+                        end
+                    end
+                end
+        	end)
+        end
+    end)
+
+    spawn(function()
+        while true do
+            task.wait()
+            pcall(function()
+                local mon = _G.mon_target_new
+                if mon and G_Plasma.AK_NEW then
+                    local mon_hp = mon:FindFirstChild("Hp")
+                    if mon_hp then
+                        while G_Plasma.AK_NEW and mon and mon.Parent and mon_hp.Value > 0 do
+                            task.wait(G_Plasma.TP_L / 1000)
+                            MonsterEvent:FireServer(
+                                "DamToMonster",
+                                mon,
+                                {
+                                    ["damtype"] = "normal"
+                                }
+                            )
+                        end
+                    end
+                end
+            end)
         end
     end)
 end
