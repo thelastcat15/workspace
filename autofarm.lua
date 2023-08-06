@@ -4133,6 +4133,7 @@ if game.PlaceId == 12986400307 then
 
 	local CurRemotes = game:GetService("ReplicatedStorage"):WaitForChild("CurRemotes")
 	local MonsterEvent = CurRemotes:WaitForChild("MonsterEvent")
+	local DataChange_Pet = CurRemotes:WaitForChild("DataChange_Pet")
 	local DataChange_Item = CurRemotes:WaitForChild("DataChange_Item")
 	local DataChange_Points = CurRemotes:WaitForChild("DataChange_Points")
 	local DataChange_Mission = CurRemotes:WaitForChild("DataChange_Mission")
@@ -4375,7 +4376,7 @@ if game.PlaceId == 12986400307 then
                     local converted = Health:gsub("K", " * 1000"):gsub("M", " * 1000000"):gsub(" / ", ") / (")
                     result = loadstring("return " .. converted)()
 
-                    if (result * 100 <= G_Plasma.Health_Set) then
+                    if result and (result * 100 <= G_Plasma.Health_Set) then
                         reset_stat()
                     end
                 end
@@ -4388,16 +4389,6 @@ if game.PlaceId == 12986400307 then
 		save_local_config()
 	end)
 		
-	main1:Bind("Tp Forward", Enum.KeyCode.Y, function()
-		local G = LocalPlayer.Character.HumanoidRootPart
-		G.CFrame = G.CFrame * CFrame.new(0,0,-500)
-	end)
-	
-	main1:Bind("Tp Backward", Enum.KeyCode.H, function()
-		local G = LocalPlayer.Character.HumanoidRootPart
-		G.CFrame = G.CFrame * CFrame.new(0,0,500)
-	end)
-
     local main2 = main:newpage()
 
 	local name_point = {"GHealth","GDamage","GSpeed","GCriticalHit"}
@@ -4418,10 +4409,11 @@ if game.PlaceId == 12986400307 then
 		end)
 	end
 
-    local item = Window:Taps("Item")
-    local item1 = item:newpage()
+    local func = Window:Taps("Function")
+    local func1 = func:newpage()
 
-    item1:Toggle("Auto Craft All", G_Plasma.Auto_Craft, function(t)
+    func1:Label("Sword")
+    func1:Toggle("Auto Craft All", G_Plasma.Auto_Craft, function(t)
         G_Plasma.Auto_Craft = t
         save_local_config()
 
@@ -4431,16 +4423,77 @@ if game.PlaceId == 12986400307 then
         end
     end)
 
+    func1:Label("Menu")
+    func1:Toggle("Hero", false, function(t)
+        MainGui.PetFrame.Visible = t
+    end)
     
-    local item2 = item:newpage()
+    func1:Toggle("Auto Skip Wave (Normal)", G_Plasma.Skip_Wave, function(t)
+        G_Plasma.Skip_Wave = t
+        save_local_config()
 
-    item2:Label("Daily Reward")
+        while G_Plasma.Skip_Wave do
+            wait()
+            
+            if G_Plasma.stage ~= "Normal" then continue end
+            
+            local pet_used
+            for _,v in pairs(MainGui.PetFrame.Main.Bag.Bag:GetChildren()) do
+            	if v.ClassName == "Frame" then
+            		if v.item.Equip.Visible then
+            			pet_used = v.Name
+            		end
+            	end
+            end
+            
+            if pet_used then
+            	DataChange_Pet:FireServer("unequip", pet_used)
+            end
+            wait(.2)
+            DataChange_Pet:FireServer("equip", "A3")
+            
+            
+            local Back = MainGui.MainFrame.Back
+            repeat wait() until Back.Visible or not G_Plasma.Skip_Wave or G_Plasma.stage ~= "Normal"
+            if G_Plasma.Skip_Wave then
+            	repeat wait()
+            		local inputString = Back.Wave.wave.Text
+					local startIndex, endIndex = string.find(inputString, "%d+")
+					local startIndex2, endIndex2 = string.find(inputString, "/%d+")
+					if startIndex2 and endIndex2 then
+						local wave_now = tonumber(string.sub(inputString, startIndex, endIndex))
+						local wave_max = tonumber(string.sub(inputString, startIndex2+1, endIndex2))
+    					if (wave_now and wave_max) then
+    						if wave_now >= wave_max - 30 then
+    							break
+    						end
+    					else
+    						print("Failed to convert the number to an integer.")
+    					end
+					else
+    					print("No number found in the input string.")
+					end
+    			until not G_Plasma.Skip_Wave or G_Plasma.stage ~= "Normal"
+			end
+			            					
+			DataChange_Pet:FireServer("unequip", "A3")
+            wait(.2)
+    		if pet_used then
+            	DataChange_Pet:FireServer("equip", pet_used)
+            end
+            
+            repeat wait() until not Back.Visible
+        end
+    end)
+    
+    local func2 = func:newpage()
 
-    item2:Button("Normal Chest", function()
+    func2:Label("Daily Reward")
+    func2:Button("Normal Chest", function()
         RangeEvent:FireServer("dayreward")
     end)
 
-    item2:Button("Group Chest", function()
+    func2:Button("Group Chest", function()
         RangeEvent:FireServer("likegroup")
     end)
 
@@ -4458,6 +4511,16 @@ if game.PlaceId == 12986400307 then
         G_Plasma.TP_L = tonumber(t)
         save_local_config()
     end)
+    
+    setting1:Bind("Tp Forward", Enum.KeyCode.Y, function()
+		local G = LocalPlayer.Character.HumanoidRootPart
+		G.CFrame = G.CFrame * CFrame.new(0,0,-500)
+	end)
+	
+	setting1:Bind("Tp Backward", Enum.KeyCode.H, function()
+		local G = LocalPlayer.Character.HumanoidRootPart
+		G.CFrame = G.CFrame * CFrame.new(0,0,500)
+	end)
 
     local setting2 = setting:newpage()
 
