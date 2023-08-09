@@ -17,7 +17,7 @@ if game.PlaceId == 12986400307 then
     local UserInputService = game:GetService("UserInputService")
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local VirtualInputManager = game:GetService("VirtualInputManager")
-	
+
     local LocalPlayer = game:GetService("Players").LocalPlayer
     local Mouse = LocalPlayer:GetMouse()
     local lastInput = UserInputService:GetLastInputType()
@@ -26,7 +26,7 @@ if game.PlaceId == 12986400307 then
         ["Content-Type"] = "application/json"
     }
 
-    LocalPlayer.Idled:connect(function()
+	LocalPlayer.Idled:connect(function()
        VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
        wait(1)
        VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
@@ -4443,11 +4443,7 @@ if game.PlaceId == 12986400307 then
 				task.wait()
 				pcall(function()
 					mon.Humanoid.WalkSpeed = 0
-					if G_Plasma.stage == "Normal" then
-                        mon.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0, -G_Plasma.TP_D)
-                    else
-                        mon.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0, G_Plasma.TP_D)
-                    end
+					mon.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0, -G_Plasma.TP_D)
 				end)
 			end
 		end
@@ -4805,6 +4801,13 @@ if game.PlaceId == 12986400307 then
             local arguments = {...}
             if arguments[1] == "DamToPlayer_Num" then
                 return
+            elseif arguments[1] == "HackCheck" then
+            	if arguments[2] == "SlashSpeed" then
+            		print("SlashSpeed : " .. arguments[3])
+                	return old(Event, "HackCheck", "SlashSpeed", 0)
+            	elseif arguments[2] == "GPswing" then
+                	return old(Event, "HackCheck", "GPswing")
+                end
             end
         end
         return old(Event, ...)
