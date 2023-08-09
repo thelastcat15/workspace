@@ -17,7 +17,7 @@ if game.PlaceId == 12986400307 then
     local UserInputService = game:GetService("UserInputService")
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local VirtualInputManager = game:GetService("VirtualInputManager")
-
+	
     local LocalPlayer = game:GetService("Players").LocalPlayer
     local Mouse = LocalPlayer:GetMouse()
     local lastInput = UserInputService:GetLastInputType()
@@ -26,6 +26,11 @@ if game.PlaceId == 12986400307 then
         ["Content-Type"] = "application/json"
     }
 
+    LocalPlayer.Idled:connect(function()
+       VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+       wait(1)
+       VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+    end)
 
     --// GUI
     if not getgenv()["Plasma"] then
