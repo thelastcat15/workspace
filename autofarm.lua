@@ -4773,13 +4773,12 @@ if game.PlaceId == 12986400307 then
     spawn(function()
         while task.wait(.5) do
             _G.map_new = find_map()
-            --pcall(function()
-            --	LocalPlayer.Character.Humanoid.WalkSpeed = G_Plasma.Speed_Set
-            --end)
+            pcall(function()
+            	LocalPlayer.Character.Humanoid.WalkSpeed = G_Plasma.Speed_Set
+            end)
         end
     end)
 
-    local MonsterEvent = game:GetService("ReplicatedStorage"):WaitForChild("CurRemotes"):WaitForChild("MonsterEvent")
     local meta = getrawmetatable(game)
     local old = meta.__namecall
 
@@ -4802,12 +4801,13 @@ if game.PlaceId == 12986400307 then
             if arguments[1] == "DamToPlayer_Num" then
                 return
             elseif arguments[1] == "HackCheck" then
-            	if arguments[2] == "SlashSpeed" then
+            	return
+            	--[[if arguments[2] == "SlashSpeed" then
             		print("SlashSpeed : " .. arguments[3])
                 	return old(Event, "HackCheck", "SlashSpeed", 0)
             	elseif arguments[2] == "GPswing" then
                 	return old(Event, "HackCheck", "GPswing")
-                end
+                end]]
             end
         end
         return old(Event, ...)
