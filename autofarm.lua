@@ -4773,9 +4773,9 @@ if game.PlaceId == 12986400307 then
     spawn(function()
         while task.wait(.5) do
             _G.map_new = find_map()
-            pcall(function()
-            	LocalPlayer.Character.Humanoid.WalkSpeed = G_Plasma.Speed_Set
-            end)
+            --pcall(function()
+            --	LocalPlayer.Character.Humanoid.WalkSpeed = G_Plasma.Speed_Set
+            --end)
         end
     end)
 
